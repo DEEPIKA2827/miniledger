@@ -4,7 +4,7 @@ import { CreateLoanPayload, LedgerSummary, Loan, User } from '../types';
 
 // Android Emulator uses 10.0.2.2 to reach host. Web/iOS/Desktop uses localhost.
 export const DEFAULT_API_BASE =
-  Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+  'http://192.168.1.2:3000';
 
 const TOKEN_KEY = '@miniledger_user_token';
 const USER_KEY = '@miniledger_user_data';
@@ -47,7 +47,7 @@ class ApiClient {
   ): Promise<T> {
     const token = await this.getToken();
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
       ...(options.headers as Record<string, string>),
     };
 
@@ -125,3 +125,5 @@ class ApiClient {
 }
 
 export const api = new ApiClient();
+
+
