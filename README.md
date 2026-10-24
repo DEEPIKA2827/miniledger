@@ -1,7 +1,14 @@
-﻿# MiniLedger — Personal Debt Tracking Application
+# MiniLedger — Personal Debt Tracking Application
 
 > **CredSetu Technologies — Full Stack Development Internship Assignment**  
 > Built with: **Node.js · TypeScript · Fastify · Prisma ORM · PostgreSQL · Zod · React Native (Expo) · Vitest**
+
+---
+
+## 📹 Video Walkthrough & Demo
+
+🎥 **Watch the Live Demonstration**:  
+👉 **[MiniLedger Full Stack Demo & Architecture Walkthrough (Google Drive)](https://drive.google.com/file/d/1SWgzR_Q7Q_cQk7c-pcBunu_RfIqN-UAb/view?usp=drivesdk)**
 
 ---
 

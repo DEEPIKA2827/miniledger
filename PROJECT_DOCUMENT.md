@@ -1,8 +1,9 @@
-﻿# MiniLedger â€” Project Specification & Architecture Document
+# MiniLedger â€” Project Specification & Architecture Document
 
-> **Author**: Internship Candidate (CredSetu Technologies Assignment)  
+> **Author**: Deepika S (CredSetu Technologies Assignment)  
 > **Target Role**: Full Stack Development Intern  
-> **Status**: In Planning (Phase 1)
+> **Status**: Completed (Phase 1 & Phase 2)  
+> **Demo Video**: [Watch Walkthrough on Google Drive](https://drive.google.com/file/d/1SWgzR_Q7Q_cQk7c-pcBunu_RfIqN-UAb/view?usp=drivesdk)
 
 ---
 

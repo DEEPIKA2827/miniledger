@@ -1,7 +1,8 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -53,6 +54,31 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay }) => {
   };
 
   const handleRepayPress = () => {
+    const executeRepay = async () => {
+      setIsUpdating(true);
+      try {
+        await onRepay(loan.id);
+      } catch (err: any) {
+        if (Platform.OS === 'web') {
+          window.alert(err.message || 'Failed to settle loan');
+        } else {
+          Alert.alert('Error', err.message || 'Failed to settle loan');
+        }
+      } finally {
+        setIsUpdating(false);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(
+        `Mark as Repaid:\nHas ${loan.friendName} repaid ₹${loan.amount}?`
+      );
+      if (confirmed) {
+        executeRepay();
+      }
+      return;
+    }
+
     Alert.alert(
       'Mark as Repaid',
       `Has ${loan.friendName} repaid ₹${loan.amount}?`,
@@ -61,16 +87,7 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay }) => {
         {
           text: 'Confirm Settled',
           style: 'default',
-          onPress: async () => {
-            setIsUpdating(true);
-            try {
-              await onRepay(loan.id);
-            } catch (err: any) {
-              Alert.alert('Error', err.message || 'Failed to settle loan');
-            } finally {
-              setIsUpdating(false);
-            }
-          },
+          onPress: executeRepay,
         },
       ]
     );

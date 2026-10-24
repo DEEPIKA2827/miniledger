@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -25,7 +25,7 @@ export const DashboardScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filter, setFilter] = useState<'all' | 'active' | 'overdue'>('all');
+  const [filter, setFilter] = useState<'all' | 'active' | 'settled' | 'overdue'>('all');
 
   const loadData = useCallback(async () => {
     try {
@@ -67,6 +67,7 @@ export const DashboardScreen: React.FC = () => {
   // Filtered loans
   const filteredLoans = loans.filter((loan) => {
     if (filter === 'active') return !loan.isRepaid;
+    if (filter === 'settled') return loan.isRepaid;
     if (filter === 'overdue') return loan.isOverdue && !loan.isRepaid;
     return true;
   });
@@ -125,6 +126,15 @@ export const DashboardScreen: React.FC = () => {
                 >
                   <Text style={[styles.filterText, filter === 'overdue' && styles.activeFilterText]}>
                     Overdue ({loans.filter((l) => l.isOverdue && !l.isRepaid).length})
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.filterPill, filter === 'settled' && styles.activeFilterPill]}
+                  onPress={() => setFilter('settled')}
+                >
+                  <Text style={[styles.filterText, filter === 'settled' && styles.activeFilterText]}>
+                    Settled ({loans.filter((l) => l.isRepaid).length})
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -222,6 +232,7 @@ const styles = StyleSheet.create({
   },
   filterRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
     marginBottom: 12,
   },
