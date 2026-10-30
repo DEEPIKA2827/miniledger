@@ -506,12 +506,12 @@ export const dashboardHtml = `<!DOCTYPE html>
         const res = await fetch(\`\${API_BASE}/api/loans/\${id}/repay\`, {
           method: 'PATCH',
           headers: {
-            'Authorization': \`Bearer \${token}\`,
-            'Content-Type': 'application/json'
+            'Authorization': \`Bearer \${token}\`
           }
         });
-        if (!res.ok) throw new Error('Failed to settle loan');
-        refreshDashboard();
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || 'Failed to settle loan');
+        await refreshDashboard();
       } catch (err) {
         alert(err.message);
       }
