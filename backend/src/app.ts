@@ -38,6 +38,27 @@ export function buildApp(): FastifyInstance {
     secret: process.env.JWT_SECRET || 'miniledger_super_secret_jwt_key_for_development_2026',
   });
 
+  // Root endpoint for friendly landing / verification
+  app.get('/', async () => {
+    return {
+      name: 'MiniLedger Backend API',
+      status: 'active',
+      endpoints: {
+        health: '/health',
+        auth: {
+          sendOtp: 'POST /api/auth/send-otp',
+          verifyOtp: 'POST /api/auth/verify-otp',
+        },
+        loans: {
+          list: 'GET /api/loans',
+          create: 'POST /api/loans',
+          summary: 'GET /api/loans/summary',
+          repay: 'PATCH /api/loans/:id/repay',
+        },
+      },
+    };
+  });
+
   // Health check endpoint for monitoring and test verification
   app.get('/health', async () => {
     return {
