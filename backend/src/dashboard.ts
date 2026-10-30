@@ -394,21 +394,29 @@ export const dashboardHtml = `<!DOCTYPE html>
           headers: { 'Authorization': \`Bearer \${token}\` }
         });
         if (summaryRes.status === 401) return logout();
-        const summary = await summaryRes.json();
+        const summaryData = await summaryRes.json();
+        const summary = summaryData.summary || summaryData;
 
-        document.getElementById('totalLent').innerText = '₹' + Number(summary.totalLent).toLocaleString('en-IN');
-        document.getElementById('totalRepaid').innerText = '₹' + Number(summary.totalRepaid).toLocaleString('en-IN');
-        document.getElementById('totalOverdue').innerText = '₹' + Number(summary.totalOverdue).toLocaleString('en-IN');
-        document.getElementById('totalLoansCount').innerText = \`\${summary.totalLoans} loans recorded\`;
-        document.getElementById('repaidLoansCount').innerText = \`\${summary.repaidLoans} settled loans\`;
-        document.getElementById('overdueLoansCount').innerText = \`\${summary.overdueLoans} overdue debts\`;
+        const totalLent = Number(summary.totalLent || 0);
+        const totalRepaid = Number(summary.totalRepaid || 0);
+        const totalOverdue = Number(summary.totalOverdue || 0);
+        const activeCount = Number(summary.activeLoanCount || 0);
+        const settledCount = Number(summary.settledLoanCount || 0);
+        const totalCount = activeCount + settledCount;
+
+        document.getElementById('totalLent').innerText = '₹' + totalLent.toLocaleString('en-IN');
+        document.getElementById('totalRepaid').innerText = '₹' + totalRepaid.toLocaleString('en-IN');
+        document.getElementById('totalOverdue').innerText = '₹' + totalOverdue.toLocaleString('en-IN');
+        document.getElementById('totalLoansCount').innerText = \`\${totalCount} loans recorded\`;
+        document.getElementById('repaidLoansCount').innerText = \`\${settledCount} settled loans\`;
+        document.getElementById('overdueLoansCount').innerText = \`\${activeCount} active loans\`;
 
         // 2. Fetch loans list
         const loansRes = await fetch(\`\${API_BASE}/api/loans\`, {
           headers: { 'Authorization': \`Bearer \${token}\` }
         });
-        const loans = await loansRes.json();
-        cachedLoans = loans;
+        const loansData = await loansRes.json();
+        cachedLoans = Array.isArray(loansData) ? loansData : (loansData.loans || []);
         renderLoans();
       } catch (err) {
         console.error('Failed to refresh dashboard', err);
@@ -567,3 +575,4 @@ export const dashboardHtml = `<!DOCTYPE html>
 </body>
 </html>
 `;
+
