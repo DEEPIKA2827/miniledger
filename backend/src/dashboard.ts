@@ -237,6 +237,8 @@ export const dashboardHtml = `<!DOCTYPE html>
         <button onclick="closeAddModal()" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
       </div>
 
+      <div id="modalError" class="hidden mb-3 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs"></div>
+
       <form onsubmit="handleCreateLoan(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Borrower / Friend Name</label>
@@ -516,6 +518,8 @@ export const dashboardHtml = `<!DOCTYPE html>
     }
 
     function openAddModal() {
+      const errEl = document.getElementById('modalError');
+      if (errEl) errEl.classList.add('hidden');
       document.getElementById('addModal').classList.remove('hidden');
       setDueDatePreset('week');
     }
@@ -540,8 +544,21 @@ export const dashboardHtml = `<!DOCTYPE html>
       const token = localStorage.getItem('ml_token');
       const friendName = document.getElementById('loanFriendName').value.trim();
       const amount = parseFloat(document.getElementById('loanAmount').value);
-      const dueDate = new Date(document.getElementById('loanDueDate').value).toISOString();
+      const dateVal = document.getElementById('loanDueDate').value;
       const notes = document.getElementById('loanNotes').value.trim() || undefined;
+
+      const modalErr = document.getElementById('modalError');
+      if (modalErr) modalErr.classList.add('hidden');
+
+      if (!dateVal) {
+        if (modalErr) {
+          modalErr.innerText = 'Please select a repayment due date.';
+          modalErr.classList.remove('hidden');
+        }
+        return;
+      }
+
+      const dueDate = new Date(dateVal).toISOString();
 
       const btn = document.getElementById('createLoanBtn');
       btn.disabled = true;
@@ -563,9 +580,14 @@ export const dashboardHtml = `<!DOCTYPE html>
         document.getElementById('loanFriendName').value = '';
         document.getElementById('loanAmount').value = '';
         document.getElementById('loanNotes').value = '';
-        refreshDashboard();
+        await refreshDashboard();
       } catch (err) {
-        alert(err.message);
+        if (modalErr) {
+          modalErr.innerText = err.message;
+          modalErr.classList.remove('hidden');
+        } else {
+          alert(err.message);
+        }
       } finally {
         btn.disabled = false;
         btn.innerText = 'Save Loan';
