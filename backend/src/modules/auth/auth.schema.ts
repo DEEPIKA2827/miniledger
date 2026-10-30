@@ -12,6 +12,7 @@ export const sendOtpSchema = {
       success: z.boolean(),
       message: z.string(),
       expiresInSeconds: z.number(),
+      devOtp: z.string().optional(),
     }),
     400: z.object({
       statusCode: z.number().optional(),

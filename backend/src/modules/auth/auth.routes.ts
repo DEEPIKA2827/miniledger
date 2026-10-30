@@ -47,6 +47,7 @@ export async function authRoutes(app: FastifyInstance) {
         success: true,
         message: 'OTP generated and logged to server console',
         expiresInSeconds: 300,
+        devOtp: otpCode,
       });
     }
   );

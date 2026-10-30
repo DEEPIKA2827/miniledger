@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 
 import { authRoutes } from './modules/auth/auth.routes';
 import { loansRoutes } from './modules/loans/loans.routes';
+import { dashboardHtml } from './dashboard';
 
 dotenv.config();
 
@@ -38,8 +39,13 @@ export function buildApp(): FastifyInstance {
     secret: process.env.JWT_SECRET || 'miniledger_super_secret_jwt_key_for_development_2026',
   });
 
-  // Root endpoint for friendly landing / verification
-  app.get('/', async () => {
+  // Root endpoint: Interactive Web Dashboard & Client
+  app.get('/', async (_request, reply) => {
+    return reply.type('text/html').send(dashboardHtml);
+  });
+
+  // JSON summary of available endpoints for programmatic API consumers
+  app.get('/api', async () => {
     return {
       name: 'MiniLedger Backend API',
       status: 'active',
